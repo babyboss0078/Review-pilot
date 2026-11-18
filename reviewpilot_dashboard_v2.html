@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReviewPilot · Super Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#fffdf8;--card:#fff;--ink:#29205f;--muted:#696486;--line:#e2dcf6;--green:#3827a5;--pale:#f0edff;--gold:#ffd43b;--red:#a53d3d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#30218f;color:#fff;padding:18px max(18px,calc((100% - 1180px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:800;font-size:20px;letter-spacing:.2px}.brand small{display:block;font-size:11px;color:#c6d8ce;font-weight:500;letter-spacing:1.5px}
+.wrap{max-width:1180px;margin:24px auto;padding:0 18px}.notice{background:#fff8df;border:1px solid #f4dfa0;color:#76551e;padding:12px 14px;border-radius:12px;margin-bottom:18px;font-size:13px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.nav button,.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer;background:#e7ede9;color:#294237}.nav button.active,.btn.primary{background:var(--green);color:white}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.secondary{background:#f0edff;color:#35258f}.btn.danger{background:#fbecec;color:#9c3333}.btn:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px}.stat span{color:var(--muted);font-size:13px}.stat strong{display:block;font-size:27px;margin-top:7px}.panel{margin-top:16px}.panel h2{font-size:17px;margin:0 0 14px}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #d8e1dc;border-radius:10px;background:#fff;color:var(--ink);font:inherit}label{font-size:12px;color:var(--muted);display:block;margin:9px 0 5px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:720px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:650}td strong{font-size:14px}.pill{display:inline-block;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:750;background:#edf1ee;color:#52645a}.pill.active,.pill.approved{background:#e4f3e9;color:#21623f}.pill.pending{background:#fff2d9;color:#8a611d}.pill.suspended{background:#fbe9e9;color:#9c3838}.empty{padding:25px;text-align:center;color:var(--muted)}.hidden{display:none!important}.actions{display:flex;gap:6px;flex-wrap:wrap}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.qrbox{min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fbfcfb;border:1px dashed #cbd8d0;border-radius:14px;padding:16px}.qrbox canvas,.qrbox img{margin:10px auto;max-width:100%}.muted{color:var(--muted);font-size:13px}.footer{color:var(--muted);font-size:12px;text-align:center;padding:24px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}header{align-items:flex-start}.wrap{margin:16px auto}}
+
+.analytics-grid{grid-template-columns:repeat(4,1fr)}
+.analytics-grid .stat{border-color:#e2dcf6}
+.analytics-grid .stat strong{font-size:25px}
+.journey-note{margin-top:14px;padding:16px;border-radius:14px;background:#f5f2ff;border:1px solid #e2dcf6;color:#35258f}
+.journey-note p{margin:8px 0 0;color:#5f5880}
+@media(max-width:760px){.analytics-grid{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+<header><div class="brand">✦ ReviewPilot <small>YOUR REVIEW BUSINESS · SUPER ADMIN</small></div><div style="font-size:12px;color:#d2e0d8">Lifetime access model</div></header>
+<div class="wrap">
+<div class="notice"><b>Prototype mode:</b> This demo stores sample data in this browser only. It is not yet connected to secure cloud login, Google Business Profile, real AI, or payment verification.</div>
+<div class="nav">
+<button class="active" data-tab="overview">Overview</button><button data-tab="shops">Shop accounts</button><button data-tab="add">Add shop</button><button data-tab="qr">QR poster</button><button data-tab="ai">AI reply assistant</button><button data-tab="settings">Business settings</button>
+</div>
+<section id="overview">
+<div class="grid">
+<div class="stat"><span>Total shops</span><strong id="total">1</strong></div>
+<div class="stat"><span>Awaiting approval</span><strong id="pending">1</strong></div>
+<div class="stat"><span>Active lifetime accounts</span><strong id="active">0</strong></div>
+<div class="stat"><span>Recorded one-time payments</span><strong id="revenue">₹0</strong></div>
+</div>
+<div class="panel"><h2>Admin workflow</h2><div class="muted">1. Add a shop → 2. Record cash or UPI payment → 3. Verify payment → 4. Approve account → 5. Generate that shop's QR.</div></div>
+
+<div class="panel" id="analytics-panel">
+  <div class="toolbar"><h2>Customer review journey</h2><span class="pill pending">Analytics setup required</span></div>
+  <div class="grid analytics-grid">
+    <div class="stat"><span>QR scans</span><strong>—</strong><small class="muted">Not connected</small></div>
+    <div class="stat"><span>Topics selected</span><strong>—</strong><small class="muted">Not connected</small></div>
+    <div class="stat"><span>Google review opens</span><strong>—</strong><small class="muted">Not connected</small></div>
+    <div class="stat"><span>Popular topics</span><strong>—</strong><small class="muted">No data yet</small></div>
+  </div>
+  <div class="journey-note">
+    <b>From scan to review</b>
+    <p>ReviewPilot can show the same journey as your reference dashboard: QR scanned → topic picked → Google review page opened.</p>
+    <p><b>Important:</b> Your current poster QR opens Google directly, so it cannot measure scans or topic choices. Accurate totals across customers' phones need a ReviewPilot landing page and a shared cloud database. Google also does not confirm whether someone finally posted a review.</p>
+  </div>
+  <div class="toolbar" style="margin-top:14px"><span class="muted">Popular feedback topics can be shown here once customer responses are collected.</span></div>
+</div>
+
+<div class="panel"><h2>Latest shop accounts</h2><div id="recent"></div></div>
+</section>
+<section id="shops" class="hidden"><div class="panel"><div class="toolbar"><h2>All shop accounts</h2><input id="search" placeholder="Search shop name…" style="max-width:250px"></div><div class="tablewrap"><table><thead><tr><th>Business</th><th>Plan</th><th>Payment</th><th>Access</th><th>Status</th><th>Actions</th></tr></thead><tbody id="shoprows"></tbody></table></div></div></section>
+<section id="add" class="hidden"><div class="panel"><h2>Register a new shop</h2><form id="shopform"><div class="formgrid">
+<div><label>Business name *</label><input id="name" required placeholder="e.g. Maharashtra Bakery & Cake Shop"></div>
+<div><label>Owner name</label><input id="owner" placeholder="Shop owner's name"></div>
+<div><label>Business category</label><select id="category"><option>Shop / Store</option><option>Bakery</option><option>Restaurant / Cafe</option><option>Salon</option><option>Hotel</option><option>Other</option></select></div>
+<div><label>Phone / WhatsApp</label><input id="phone" placeholder="+91…"></div>
+<div><label>Google Maps / review URL *</label><input id="url" type="url" required placeholder="https://…"></div>
+<div><label>One-time amount received (₹)</label><input id="amount" type="number" min="0" value="1999" required></div>
+<div><label>Payment method</label><select id="method"><option>UPI</option><option>Cash</option></select></div>
+<div><label>Payment status</label><select id="paystatus"><option>Pending verification</option><option>Received — verified</option></select></div>
+</div><p class="muted">New accounts always start as pending. You must manually approve them after checking payment and business details.</p><button class="btn primary" type="submit">＋ Create shop account</button></form></div></section>
+<section id="qr" class="hidden"><div class="panel"><h2>QR poster generator</h2>
+<div class="split">
+<div>
+<label>Select shop</label><select id="qrshop"></select>
+<label>QR destination URL</label><input id="qrurl" placeholder="Select a shop first">
+<label>Upload shop logo (optional)</label><input id="shoplogo" type="file" accept="image/*">
+<label>Poster headline</label><input id="posterheadline" value="WE'D LOVE YOUR FEEDBACK">
+<label>Footer message</label><input id="posterfooter" value="Scan, pick a topic, post on Google">
+<p class="muted">Creates an A4-style poster with the shop name, five decorative stars, QR code and optional shop logo in the QR centre. Use the direct Google review-form URL where possible.</p>
+<button class="btn primary" id="makeqr">Generate poster</button>
+<button class="btn secondary" id="downloadqr">Download poster PNG</button>
+<button class="btn secondary" id="printposter">Print / Save as PDF</button>
+</div>
+<div class="qrbox"><canvas id="postercanvas" width="794" height="1123" style="width:100%;max-width:360px;height:auto;border:1px solid #e2e9e5;border-radius:8px;background:white"></canvas><b id="qrlabel">Select a shop</b><span class="muted">A4 portrait poster preview</span></div>
+</div></div></section>
+<section id="ai" class="hidden"><div class="panel"><h2>AI review reply assistant</h2><p class="muted">Draft a polite response. This local demo uses a template; connect an AI provider in production for genuine AI-generated replies.</p><label>Customer review</label><textarea id="review" rows="4" placeholder="Paste the customer's review…"></textarea><label>Reply tone</label><select id="tone"><option>Warm and grateful</option><option>Professional</option><option>Apologetic and helpful</option></select><button class="btn primary" id="draft">Create reply draft</button><label>Suggested reply</label><textarea id="reply" rows="5" placeholder="Your draft will appear here…"></textarea><button class="btn secondary" id="copy">Copy reply</button></div></section>
+<section id="settings" class="hidden"><div class="panel"><h2>Platform settings</h2><label>Platform brand</label><input id="brandname" value="ReviewPilot"><label>UPI ID for receiving payments</label><input id="upi" placeholder="yourname@bank"><label>Default one-time price (₹)</label><input id="defaultprice" type="number" value="1999"><p class="muted">These are local demo settings. Do not enter bank passwords, UPI PINs, or OTPs. A production system must verify UPI payments against a payment provider/webhook or verified bank records.</p><button class="btn primary" id="savesettings">Save settings</button><p id="saved" class="muted"></p></div></section>
+<div class="footer">ReviewPilot prototype · Not a live production service · Data remains in this browser</div>
+</div>
+<script>
+const seed=[{id:"RP-001",name:"Maharashtra Bakery & Cake Shop",owner:"",category:"Bakery",phone:"",url:"https://maps.app.goo.gl/JkKvNQHmr9PcZmSe8?g_st=ic",amount:1999,method:"UPI",paystatus:"Pending verification",status:"Pending approval",created:new Date().toISOString()}];
+let shops=JSON.parse(localStorage.getItem("rp_shops")||"null")||seed;
+let settings=JSON.parse(localStorage.getItem("rp_settings")||"{}");
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("rp_shops",JSON.stringify(shops));render()}
+function money(n){return "₹"+Number(n||0).toLocaleString("en-IN")}
+function render(){
+$("total").textContent=shops.length;$("pending").textContent=shops.filter(s=>s.status==="Pending approval").length;
+$("active").textContent=shops.filter(s=>s.status==="Active").length;
+$("revenue").textContent=money(shops.filter(s=>s.paystatus==="Received — verified").reduce((a,s)=>a+Number(s.amount||0),0));
+$("recent").innerHTML=shops.slice(-5).reverse().map(s=>`<p><b>${esc(s.name)}</b> · <span class="pill ${s.status==="Active"?"active":s.status==="Suspended"?"suspended":"pending"}">${esc(s.status)}</span></p>`).join("")||'<div class="empty">No shops yet</div>';
+const q=($("search")?.value||"").toLowerCase();
+$("shoprows").innerHTML=shops.filter(s=>s.name.toLowerCase().includes(q)).map(s=>`<tr><td><strong>${esc(s.name)}</strong><br><span class="muted">${esc(s.category)} · ${esc(s.id)}</span></td><td>Lifetime</td><td>${money(s.amount)}<br><span class="muted">${esc(s.method)} · ${esc(s.paystatus)}</span></td><td>Lifetime QR + dashboard + AI</td><td><span class="pill ${s.status==="Active"?"active":s.status==="Suspended"?"suspended":"pending"}">${esc(s.status)}</span></td><td><div class="actions">${s.status==="Pending approval"&&s.paystatus!=="Received — verified"?`<button class="btn secondary" onclick="verifyPayment('${s.id}')">Verify payment</button>`:""}${s.status==="Pending approval"&&s.paystatus==="Received — verified"?`<button class="btn primary" onclick="approve('${s.id}')">Approve</button>`:""}${s.status==="Active"?`<button class="btn danger" onclick="suspend('${s.id}')">Suspend</button>`:""}${s.status==="Suspended"?`<button class="btn secondary" onclick="reactivate('${s.id}')">Reactivate</button>`:""}<button class="btn secondary" onclick="chooseQR('${s.id}')">QR</button></div></td></tr>`).join("")||'<tr><td colspan="6" class="empty">No matching shops</td></tr>';
+$("qrshop").innerHTML='<option value="">Choose shop…</option>'+shops.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
+}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function verifyPayment(id){let s=shops.find(x=>x.id===id);if(!s)return;if(!confirm("Only continue if you have independently checked your UPI/bank record or received the cash. Mark this payment as verified?"))return;s.paystatus="Received — verified";save()}
+function approve(id){let s=shops.find(x=>x.id===id);if(!s)return;if(s.paystatus!=="Received — verified"){alert("Verify the cash/UPI payment first, then approve.");return}s.status="Active";save()}
+function suspend(id){let s=shops.find(x=>x.id===id);if(s){s.status="Suspended";save()}}
+function reactivate(id){let s=shops.find(x=>x.id===id);if(s){s.status="Active";save()}}
+function chooseQR(id){$("qrshop").value=id;loadQRShop();document.querySelector('[data-tab="qr"]').click()}
+$("shopform").addEventListener("submit",e=>{e.preventDefault();let id="RP-"+String(Date.now()).slice(-6);shops.push({id,name:$("name").value.trim(),owner:$("owner").value,category:$("category").value,phone:$("phone").value,url:$("url").value.trim(),amount:Number($("amount").value),method:$("method").value,paystatus:$("paystatus").value,status:"Pending approval",created:new Date().toISOString()});save();e.target.reset();$("amount").value=$("defaultprice").value||1999;alert("Shop created as Pending approval. Review payment and approve manually.")});
+$("search").addEventListener("input",render);
+function loadQRShop(){let s=shops.find(x=>x.id===$("qrshop").value);$("qrurl").value=s?.url||"";$("qrlabel").textContent=s?.name||"Select a shop";drawPosterPlaceholder()}
+$("qrshop").addEventListener("change",loadQRShop);
+function drawPosterPlaceholder(){let c=$("postercanvas"),x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.strokeStyle="#4285f4";x.lineWidth=12;x.strokeRect(28,28,c.width-56,c.height-56);x.fillStyle="#172923";x.textAlign="center";x.font="bold 35px Arial";x.fillText("YOUR SHOP NAME",c.width/2,220);x.fillStyle="#e5a000";x.font="bold 52px Arial";x.fillText("★ ★ ★ ★ ★",c.width/2,300);x.fillStyle="#172923";x.font="bold 24px Arial";x.fillText("WE'D LOVE YOUR FEEDBACK",c.width/2,390);x.font="20px Arial";x.fillText("Generate a poster to preview your QR",c.width/2,900)}
+function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.stroke()}
+function generatePoster(){let u=$("qrurl").value.trim(),s=shops.find(v=>v.id===$("qrshop").value);if(!u||!s){alert("Choose a shop and enter its Google destination URL.");return}if(!window.QRCode){alert("QR library needs internet access. Try again online.");return}
+let holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-9999px";document.body.appendChild(holder);new QRCode(holder,{text:u,width:560,height:560,colorDark:"#111111",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+setTimeout(()=>{let q=holder.querySelector("canvas")||holder.querySelector("img");if(!q){holder.remove();alert("QR could not be generated.");return}
+let c=$("postercanvas"),ctx=c.getContext("2d"),W=c.width,H=c.height;ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);
+ctx.lineWidth=12;ctx.strokeStyle="#4285f4";ctx.beginPath();ctx.roundRect(55,55,W-110,H-110,26);ctx.stroke();
+ctx.fillStyle="#172923";ctx.textAlign="center";ctx.font="bold 37px Arial";let name=s.name;let words=name.split(" "),lines=[],line="";for(let w of words){let test=line?line+" "+w:w;if(ctx.measureText(test).width>640&&line){lines.push(line);line=w}else line=test}if(line)lines.push(line);let yy=230;lines.slice(0,2).forEach(v=>{ctx.fillText(v,W/2,yy);yy+=48});
+ctx.fillStyle="#f0ad00";ctx.font="bold 54px Arial";ctx.fillText("★ ★ ★ ★ ★",W/2,yy+55);
+ctx.fillStyle="#172923";ctx.font="bold 25px Arial";ctx.fillText($("posterheadline").value||"WE'D LOVE YOUR FEEDBACK",W/2,yy+145);
+let qs=470,qx=(W-qs)/2,qy=yy+195;
+if(q.tagName==="CANVAS")ctx.drawImage(q,qx,qy,qs,qs);else{let im=new Image();im.onload=()=>ctx.drawImage(im,qx,qy,qs,qs);im.src=q.src}
+let logoFile=$("shoplogo").files[0];if(logoFile){let im=new Image();im.onload=()=>{ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(W/2,qy+qs/2,53,0,Math.PI*2);ctx.fill();ctx.save();ctx.beginPath();ctx.arc(W/2,qy+qs/2,47,0,Math.PI*2);ctx.clip();ctx.drawImage(im,W/2-43,qy+qs/2-43,86,86);ctx.restore()};im.src=URL.createObjectURL(logoFile)}
+ctx.fillStyle="#303a35";ctx.font="21px Arial";ctx.fillText($("posterfooter").value||"Scan to review us on Google",W/2,Math.min(H-115,qy+qs+70));
+$("qrlabel").textContent=s.name;holder.remove();
+},150)}
+$("makeqr").onclick=generatePoster;
+$("downloadqr").onclick=()=>{let a=document.createElement("a");a.href=$("postercanvas").toDataURL("image/png");a.download="reviewpilot-"+(($("qrshop").value)||"shop")+"-poster.png";a.click()};
+$("printposter").onclick=()=>{let data=$("postercanvas").toDataURL("image/png"),w=window.open("");if(!w){alert("Allow pop-ups to print the poster.");return}w.document.write('<html><head><title>ReviewPilot Poster</title><style>@page{size:A4;margin:0}html,body{margin:0}img{width:210mm;height:297mm;display:block}</style></head><body><img src="'+data+'" onload="window.print()"></body></html>');w.document.close()};
+$("draft").onclick=()=>{let r=$("review").value.trim();if(!r){alert("Paste a customer review first");return}let t=$("tone").value;let start=t==="Apologetic and helpful"?"We're sorry your experience didn't meet expectations. Thank you for bringing this to our attention.":t==="Professional"?"Thank you for taking the time to share your feedback.":"Thank you so much for your kind feedback and support!";$("reply").value=start+" We value every customer's experience and will use your feedback to keep improving. We hope to welcome you again soon."};
+$("copy").onclick=()=>{navigator.clipboard?.writeText($("reply").value).then(()=>alert("Reply copied")).catch(()=>alert("Select and copy the reply manually"))};
+$("savesettings").onclick=()=>{settings={brand:$("brandname").value,upi:$("upi").value,defaultprice:$("defaultprice").value};localStorage.setItem("rp_settings",JSON.stringify(settings));$("saved").textContent="Saved in this browser."};
+if(settings.brand)$("brandname").value=settings.brand;if(settings.upi)$("upi").value=settings.upi;if(settings.defaultprice)$("defaultprice").value=settings.defaultprice;
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden")}));
+render();
+</script></body></html>
